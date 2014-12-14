@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="kik-transparent-statusbar" content="true">
+
+    <link rel="stylesheet" type="text/css" href="css/jquery.mmenu.all.css">
+    <link rel="stylesheet" href="src/stylesheets/base.css">
+    <link rel="stylesheet" href="src/stylesheets/app.css">
+    
+    <style>
+      ul.colour-picker li {
+        position: relative;
+        display: block;
+        float: left;
+        height: 54px;
+        width: 25%;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      ul.colour-picker li[data-colour="teal"] {
+        background: #2B9;
+      }
+      ul.colour-picker li[data-colour="green"] {
+        background: #3C7;
+      }
+      ul.colour-picker li[data-colour="yellow"] {
+        background: #EC1;
+      }
+      ul.colour-picker li[data-colour="orange"] {
+        background: #E82;
+      }
+      ul.colour-picker li[data-colour="red"] {
+        background: #E54;
+      }
+      ul.colour-picker li[data-colour="blue"] {
+        background: #39D;
+      }
+      ul.colour-picker li[data-colour="dark-blue"] {
+        background: #345;
+      }
+      ul.colour-picker li[data-colour="white"] {
+        background: #FFF;
+      }
+      ul.colour-picker li.active:before {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background: rgba(0,0,0,0.1);
+        content: "";
+      }
+
+      @-webkit-keyframes pulse {
+        0% {
+          background-color: #CCC;
+        }
+        25% {
+          background-color: #EEE;
+        }
+        50% {
+          background-color: #CCC;
+        }
+        75% {
+          background-color: #EEE;
+        }
+        100% {
+          background-color: #CCC;
+        }
+      }
+      .scroll-page .loading {
+        margin: 12px auto;
+        border: 8px solid #AAA;
+        height: 16px;
+        width: 16px;
+        background: #CCC;
+        border-radius: 16px;
+        -webkit-animation: pulse 2s ease-in-out 0s infinite;
+      }
+
+
+
+      div.splash {
+        margin: 0 auto;
+        width: 100%;
+        height: 100%;
+        background: #003876 url(img/splash.png) center center no-repeat;
+        background-size: 60%;
+      }
+      .app-topbar {
+        background: #003876;
+      }
+      .box-roupa-gang {
+        z-index: 1;
+        top: 20px;
+        right: 0;
+        position: absolute;
+        padding: 15px;
+        padding-right: 20px;
+        color: #333333;
+        -webkit-box-shadow: 3px 3px 5px 0 #7D7D7D;
+        box-shadow: 3px 3px 5px 0 #7D7D7D;
+        float: right;
+        width: 100px;
+        height: 50px;
+        border: 1px solid #cdcdcd;
+        background: white url(img/ico-gang.png) center right 5px no-repeat;
+        background-size: 35%;
+      }
+      
+      #map-canvas { width: 100%; height: 100%; }
+
+      .back { background: url(img/arrow-back.png) no-repeat center center; }
+
+      .image-event { width: 100%; height: 200px; background-size: cover; }
+
+      .description-event { padding: 15px; }
+
+      .search { background: url(img/lupa.png) no-repeat center center; }
+
+      .half-left { padding: 15px; float: left; width: 40%; text-align: left; }
+
+      .half-right { padding: 15px; float: right; width: 40%; text-align: right; }
+
+      .fix-float { float: none; clear: both; width: 100%; height: 1px; }
+
+      .participate { background: url(img/participar.png) no-repeat top right; /*width: 128px;*/ height: 24px; }
+
+      .participate.active { background-position: bottom right; }
+
+      a { color:#ffffff; }
+
+      #menu { display: none; }
+
+    </style>
+
+  </head>
+
+
+  <body>
+
+    
+    <div class="app-page" data-page="home">
+      <div class="app-content">
+        <div class="splash"></div>
+      </div>
+    </div>
+
+
+
+    <!--div class="subreddit app-topbar">
+      <div class="app-title subreddit"><span>Front Page</span></div>
+      <div class="right app-button subreddits" data-clickable-class="active" style="-webkit-tap-highlight-color: rgba(255, 255, 255, 0);"><span><div class="icon"></div></span></div>
+    </div-->
+
+
+
+    <div class="app-page" data-page="map">
+      
+
+      <nav id="menu">
+        <img src="img/fake_menu.png" width="100%" height="100%">
+         <!--ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About us</a>
+               <ul>
+                  <li><a href="/about/history">History</a></li>
+                  <li><a href="/about/team">The team</a></li>
+                  <li><a href="/about/address">Our address</a></li>
+               </ul>
+            </li>
+            <li><a href="/contact">Contact</a></li>
+         </ul-->
+      </nav>
+
+
+      <div class="app-topbar">
+        <a href="#menu"><div class="left app-button" data-clickable-class="active" >&#9776;<span> Gang App</span></div></a>
+        <div class="right app-button search" data-clickable-class="active" ></div>
+      </div>
+
+
+      <div class="app-content">
+        <div class='box-roupa-gang'>Com que roupa eu vou?</div>
+        <div id="map-canvas"></div>
+      </div>
+
+    </div>
+
+
+
+
+
+
+    <div class="app-page" data-page="info-details">
+
+
+      <div class="app-topbar">
+        <div class="right app-button back" data-clickable-class="active" data-back ></div>
+        <div class="app-title subreddit"><span>Info</span></div>
+      </div>
+
+
+      <div class="app-content">
+        <div class='image-event'></div>
+
+        <div class='pop-event half-left'><img src=""></div>
+        <div class='half-right'>
+          <div class='participate' id='btn_participar'></div>
+          <img id='btn_like' src="img/like.png">
+        </div>
+        <div class='fix-float'></div>
+
+        <div class='description-event'></div>
+      </div>
+
+    </div>
+
+
+
+
+
+
+    
+    <!--div class="app-page" data-page="home-teste">
+      <div class="app-topbar">
+        <div class="app-title"><span class="app-icon"></span>Demo App</div>
+      </div>
+
+      <div class="app-content">
+        <p class="app-section">
+          Welcome to the App.js default theme. Click around to see what each widget looks like.
+        </p>
+
+        <div class="app-section">
+          <b>Topbar colours:</b><br>
+          <ul class="colour-picker">
+            <li data-colour="teal"></li>
+            <li data-colour="green"></li>
+            <li data-colour="yellow"></li>
+            <li data-colour="orange"></li>
+            <li data-colour="red"></li>
+            <li data-colour="blue"></li>
+            <li data-colour="dark-blue"></li>
+            <li data-colour="white"></li>
+            <div class="clear"></div>
+          </ul>
+        </div>
+
+        <div class="app-section">
+          <div class="app-button" data-target="lists">Lists</div>
+          <div class="app-button" data-target="buttons">Buttons</div>
+          <div class="app-button" data-target="inputs">Inputs</div>
+          <div class="app-button" data-target="scroll">Scrolling</div>
+        </div>
+      </div>
+    </div!-->
+
+
+
+
+    
+
+
+
+
+
+    <!-- Not necessary, but will make our lives a little easier -->
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+
+    <script type="text/javascript" src="js/jquery-2.1.0.min.js"></script>
+    <script src="js/jquery.mmenu.min.all.js"          ></script>
+    <script src="js/zepto.min.js"          ></script>
+
+    <script src="src/lib/swapper.js"    ></script>
+    <script src="src/lib/clickable.js"  ></script>
+    <script src="src/lib/scrollable.js" ></script>
+    <script src="src/app.js"            ></script>
+    <script src="src/utils.js"          ></script>
+    <script src="src/events.js"         ></script>
+    <script src="src/metrics.js"        ></script>
+    <script src="src/dialog.js"         ></script>
+    <script src="src/form.js"           ></script>
+    <script src="src/scroll.js"         ></script>
+    <script src="src/scroll-fix.js"     ></script>
+    <script src="src/pages.js"          ></script>
+    <script src="src/stack.js"          ></script>
+    <script src="src/transitions.js"    ></script>
+    <script src="src/navigation.js"     ></script>
+
+    <script>
+
+      ///////////////////
+      // Dados falsos para função do app
+      ///////////////////
+
+      var selected;
+
+      var meu_evento = {
+        id: -1,
+      };
+
+      var dados = [
+        { 
+          id: 0,
+          evento: "72 NEW YORK PUB",
+          descricao: "Como a fascinante metrópole mundial, Nova York, o 72 NY Pub Bar é um lugar que está sempre a reinventar–se. Considerado o melhor bar para paquerar de Porto Alegre pela revista Veja 2009–2010, 0 72 como é conhecido por seus freqüentadores, possui um ambiente descontraído. Com sua decoração descolada, telões onde se vê e ouve músicas de qualidade e uma vasta carta de petiscos que caem muito bem com as melhores marcas de bebidas, você terá uma noite inesquecível.",
+          endereco: "Av. Nova York, 72 - Auxiliadora",
+          imagem: "img/72.jpg",
+          lat: -30.0215628,
+          lng: -51.1949908,
+          pagina: 470500959755269,
+          data: "31/12/2014",
+          hora_inicio: "20:00",
+          hora_fim: "06:00",
+          homens: 5,
+          mulheres: 5
+        },
+        { 
+          id: 1,
+          evento: "Opinião",
+          descricao: "O Opinião é a mais importante casa de shows do sul do país. Localizado na rua José do Patrocínio, esquina com a Joaquim Nabuco, na Cidade Baixa – bairro boêmio de Porto Alegre, foi criado em outubro de 1983. O local abriga também eventos particulares, como lançamentos de produtos e eventos empresariais.",
+          endereco: "Rua José do Patrocínio, 834 - Cidade Baixa",
+          imagem: "img/opiniao.jpg",
+          lat: -30.041778,
+          lng: -51.220882,
+          pagina: 470500959755269,
+          data: "31/12/2014",
+          hora_inicio: "20:00",
+          hora_fim: "06:00",
+          homens: 3,
+          mulheres: 7
+        },
+        { 
+          id: 2,
+          evento: "Beco",
+          descricao: "Depois de duas semanas entediados, cansamos de esperar! O Beco 203 não foi feito para ficar parado, nem vocês! E já que não podemos abrir as portas por enquanto, faremos festa em outro lugar! E que lugar! Depois de se aventurar pelos melhores redutos de entretenimento adulto do Rio Grande do Sul, o Beco volta a invadir os arredores da Farrapos, a “zona” de prazeres mais famosa de Porto.",
+          endereco: "Avenida Independência, 936, Independência",
+          imagem: "img/beco.jpg",
+          lat: -30.029349,
+          lng: -51.2116864,
+          pagina: 470500959755269,
+          data: "31/12/2014",
+          hora_inicio: "20:00",
+          hora_fim: "06:00",
+          homens: 7,
+          mulheres: 3
+        }
+      ];
+
+
+
+
+      
+      App.controller('home', function (page) 
+      {
+        setTimeout( function() 
+        { 
+          App.load('map', 'explode-out'); 
+        }, 300 );
+      });
+      
+
+
+
+      App.controller('map', function (page) 
+      {
+        //google.maps.event.addDomListener(page, 'load', initialize);
+        //initialize();
+        this.onShow = function () {
+          initialize();
+          $(page).find('#menu').mmenu({}).css('display', 'block');
+        };
+
+
+
+        /*
+        $(page).find('[data-target="inputs"]')
+          .attr('data-target', null)
+          .stickyClick(function (unlock) {
+            App.pick('inputs', function (params) {
+              console.log(JSON.stringify(params));
+              unlock();
+            });
+          });
+
+        $(page).find('ul.colour-picker li')
+          .clickable()
+          .on('click', function () {
+            var oldColour = colour;
+            colour = $(this).data('colour');
+
+            if (oldColour === colour) {
+              return;
+            }
+            localStorage[COLOUR_KEY] = colour;
+
+            for (var i=0; i<colourPages.length; i++) {
+              if (oldColour) {
+                colourPages[i].removeClass(oldColour);
+              }
+              if (colour) {
+                colourPages[i].addClass(colour);
+              }
+            }
+          });
+      */
+      });
+
+      
+
+
+      App.controller('info-details', function (page) 
+      {
+        $(page).find('.app-title span').html( selected.evento );
+        $(page).find('.image-event').css( 'background-image', 'url(' + selected.imagem + ')' );
+        $(page).find('.pop-event img').attr( 'src', 'img/statusbar/barra00' + selected.porcentagem + '.png' );
+        $(page).find('.description-event').html( selected.descricao );
+
+        if( meu_evento.id == selected.id ) {
+          $(page).find('#btn_participar').addClass('active');
+        }
+
+
+        $(page).find('#btn_participar').on('click', function () 
+        {
+            if( meu_evento.id == selected.id ) 
+            {
+              $(this).removeClass('active');
+              selected.homens--;
+              meu_evento.id = -1;
+            } 
+            else 
+            {
+              selected.homens++;
+              meu_evento.id = selected.id;
+              $(this).addClass('active');
+              //App.back();
+            }
+         });
+      });
+
+
+
+
+      /*
+      App.controller('lists', function (page) {
+        //setupPageColour(page);
+
+        this.onShow = function () {
+          console.log('lists page is visible');
+        };
+
+        this.onHide = function () {
+          console.log('lists page is invisible');
+        };
+
+        this.onBack = function () {
+          console.log('lists page is going back');
+        };
+
+        this.onForward = function () {
+          console.log('lists page is going forward');
+        };
+      });
+
+      App.controller('buttons', function (page) {
+        //setupPageColour(page);
+
+        $(page).find('.app-menu')
+          .on('click', function () {
+            App.dialog({
+              doButton     : 'Do Something' ,
+              otherButton  : 'Or Another Thing'  ,
+              okButton     : 'Share on Kik' ,
+              cancelButton : 'Cancel'
+            }, function (choice) {
+              console.log(choice);
+            });
+          });
+      });
+
+      App.controller('inputs', function (page) {
+        //setupPageColour(page);
+        if (App.platform === 'ios') {
+          this.transition = 'slideon-down';
+        }
+        App.form($(page).find('form'), this.reply);
+      });
+
+      App.controller('scroll', function (page) {
+        setupPageColour(page);
+
+        var $loading  = $(page).find('.loading'),
+          $list     = $(page).find('.app-list'),
+          $listItem = $(page).find('.app-list li'),
+          i = 1;
+
+        $loading.remove();
+        $listItem.remove();
+
+        App.infiniteScroll($list, { loading: $loading }, function (callback) {
+          if (i >= 40) {
+            return null;
+          }
+          setTimeout(function () {
+            var list = [];
+            for (var j=0; j<12; j++) {
+              var $node = $listItem.clone();
+              $node.find('span').text(i+j);
+              list.push($node);
+            }
+            i += 12;
+            callback(list);
+          }, 1200);
+        });
+      });
+      */
+
+
+
+      App.enableDragTransition();
+      //google.maps.event.addDomListener(window, 'load', initialize);
+      /*try {
+        App.restore();
+      } catch (err) {*/
+        App.load('home');
+      //}
+      
+
+
+
+
+
+
+
+      function initialize(evt) 
+      {
+          var mapOptions = {
+            zoom: 13,
+            center: new google.maps.LatLng(-30.026643,-51.219119),
+            disableDefaultUI: true,
+            zoomControl: true
+            //mapTypeId: google.maps.MapTypeId.SATELLITE
+          };
+
+          var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+
+          for ( var i in dados ) {
+              CreateMapPoint( dados[i], map )
+          }
+      }
+
+
+
+
+      function CreateMapPoint( dado, map ) 
+      {
+          var marker;
+          var total;
+          var pm;
+          var image;
+          var final_image;
+          var infowindow = new google.maps.InfoWindow({});
+
+          // calcula porcentagem de mulheres
+          total = dado.mulheres + dado.homens;
+          pm = parseInt( ( dado.mulheres / total ) * 100 );
+
+          dado.porcentagem = pm;
+          // cria a imagem baseada na porcentagem
+          // carrega a primeira imagem
+          image = new Image();
+          image.onload = function()
+          {
+            // carrega a segunda imagem
+            var img2 = new Image();
+            img2.onload = function() 
+            {
+              // une as duas imagens
+              final_image = JoinImage( image, img2 );
+
+              // cria o marker
+              marker = new google.maps.Marker({ 
+                    position: new google.maps.LatLng( dado.lat, dado.lng ), 
+                    icon:final_image, map: map, title: dado.evento,
+                    description: dado.descricao, 
+                    id: dado.id, page: dado.pagina,
+                    image: dado.imagem
+              });
+
+              google.maps.event.addListener(marker, 'click', function() 
+              {
+                selected = dado;
+                App.load('info-details');
+                //infowindow.setContent("<div class='content_info'>" + this.title + "</div>");
+                //infowindow.open(map,this);
+              });
+
+            };
+            img2.src = 'img/statusbar/barra00' + pm + '.png';
+          };
+
+          if( meu_evento.id == dado.id ) 
+            image.src = 'img/balada-euvou.png';
+          else
+            image.src = 'img/balada.png';
+      }
+
+
+
+
+      function JoinImage( i1, i2 )
+      {
+        
+        //var canvas = document.getElementById('myCanvas');
+        var canvas = document.createElement("canvas");
+        canvas.width = 42;
+        canvas.height = 45;
+        var context = canvas.getContext('2d');
+
+        context.globalAlpha = 1.0;
+        context.drawImage(i1, 12, 0);
+        context.drawImage(i2, 0, 0);
+
+        // Get the data-URL formatted image
+        // Firefox supports PNG and JPEG. You could check img.src to
+        // guess the original format, but be aware the using "image/jpg"
+        // will re-encode the image.
+        return canvas.toDataURL("image/png");
+        //return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+      }
+
+
+
+
+    </script>
+  </body>
+</html>
